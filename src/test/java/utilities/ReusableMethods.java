@@ -37,9 +37,9 @@ public class ReusableMethods {
         return stringList;
     }
 
-    public static void titleIleWindowGecisi(WebDriver driver , String hedefWindowTitle){
+    public static void titleIleWindowGecisi( String hedefWindowTitle){
         // 1- acik tum window'larin whd'lerini kaydedelim
-        Set<String> acikTumWindowlarinWhdSeti = driver.getWindowHandles();
+        Set<String> acikTumWindowlarinWhdSeti = Driver.getDriver().getWindowHandles();
 
         // 2- gecmek istedigimiz window'un title'ini kaydedelim
         // String hedefWindowTitle = "New Window";
@@ -51,18 +51,18 @@ public class ReusableMethods {
 
         for (String eachWhd : acikTumWindowlarinWhdSeti){
 
-            driver.switchTo().window(eachWhd);
+            Driver.getDriver().switchTo().window(eachWhd);
 
-            if (driver.getTitle().equals(hedefWindowTitle)){
+            if (Driver.getDriver().getTitle().equals(hedefWindowTitle)){
                 break;
             }
 
         }
     }
 
-    public static void urlIleWindowGecisi(WebDriver driver , String hedefWindowUrl){
+    public static void urlIleWindowGecisi( String hedefWindowUrl){
         // 1- acik tum window'larin whd'lerini kaydedelim
-        Set<String> acikTumWindowlarinWhdSeti = driver.getWindowHandles();
+        Set<String> acikTumWindowlarinWhdSeti = Driver.getDriver().getWindowHandles();
 
         // 2- gecmek istedigimiz window'un title'ini kaydedelim
         // String hedefWindowTitle = "New Window";
@@ -74,9 +74,9 @@ public class ReusableMethods {
 
         for (String eachWhd : acikTumWindowlarinWhdSeti){
 
-            driver.switchTo().window(eachWhd);
+            Driver.getDriver().switchTo().window(eachWhd);
 
-            if (driver.getCurrentUrl().equals(hedefWindowUrl)){
+            if (Driver.getDriver().getCurrentUrl().equals(hedefWindowUrl)){
                 break;
             }
 
@@ -190,4 +190,23 @@ public class ReusableMethods {
         }
     }
 
+    public static String raporaResimEkle(String testIsmi) throws IOException {
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("_yyMMdd_HHmmss");
+        String date = localDateTime.format(format); // _241219_080623
+
+        // 1.adim tss objesi olusturalim
+        //   ve takesScreenshot objesi ile gecici resmi kaydedelim
+        TakesScreenshot takesScreenshot = (TakesScreenshot) Driver.getDriver();
+        File geciciDosya = takesScreenshot.getScreenshotAs(OutputType.FILE);
+
+        // Asil resmi kaydedecegimiz dosya yolunu olusturup
+        // bu dosya yolu ile resmi kaydedecegimiz asil dosyayi olusturalim
+        String dosyaYolu = System.getProperty("user.dir") + "/test-output/Screenshots/" + testIsmi + date + ".jpg";
+        File asilResimDosyasi = new File(dosyaYolu);
+        // gecici dosyayi asil dosyaya kopyalayalim
+        FileUtils.copyFile(geciciDosya, asilResimDosyasi);
+        return dosyaYolu;
+    }
 }
