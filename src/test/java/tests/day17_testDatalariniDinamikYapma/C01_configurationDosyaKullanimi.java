@@ -1,11 +1,16 @@
 package tests.day17_testDatalariniDinamikYapma;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.TestotomasyonuPage;
 import utilities.ConfigReader;
 import utilities.Driver;
 import utilities.ReusableMethods;
+
+import static utilities.Driver.driver;
 
 public class C01_configurationDosyaKullanimi {
 
@@ -34,8 +39,13 @@ public class C01_configurationDosyaKullanimi {
         testotomasyonuPage.loginSayfasiSubmitButonu
                 .click();
 
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        // 300 piksel aşağı kaydır
+        js.executeScript("window.scrollBy(0, 300);");
+
         // 6- Basarili olarak giris yapilabildigini test edin
         Assert.assertTrue(testotomasyonuPage.logoutButonu.isDisplayed());
+
 
         // 7- logout olun
         testotomasyonuPage.logoutButonu
