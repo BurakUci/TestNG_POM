@@ -27,7 +27,7 @@ public class C04_BasicDriverClassKullanimi {
             kullanmayi tercih etmistir
          */
 
-    @Test
+    @Test (groups = {"smoke","E2E","regression"})
     public void test01(){
 
         // testotomasyonu anasayfaya gidin

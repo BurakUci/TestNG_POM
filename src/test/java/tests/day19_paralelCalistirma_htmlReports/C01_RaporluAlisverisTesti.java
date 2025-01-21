@@ -1,4 +1,4 @@
-package tests.day17_testDatalariniDinamikYapma;
+package tests.day19_paralelCalistirma_htmlReports;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -8,53 +8,82 @@ import pages.TestotomasyonuPage;
 import utilities.ConfigReader;
 import utilities.Driver;
 import utilities.ReusableMethods;
+import utilities.TestBaseRapor;
 
 import static utilities.Driver.driver;
 
-public class C03_AlisverisSepetiTesti {
+public class C01_RaporluAlisverisTesti extends TestBaseRapor {
+    /*
+        Bir test method'unun raporlu olmasini istiyorsaniz
+        1- extends TestBaseRapor ile class'i TestBaseRapor'a child yapariz
+        2- Page Object Model'e uygun olarak test adimlari icin
+           gerekli kodlari yazariz
+        3- HER TEST METHOD'u icin extentTest objesi olusturup
+           o test method'una raporda gorunecek bir isim
+           ve bir aciklama yaziyoruz
+        4- Raporda gorunmesini istedigimiz her adimi
+           extentTest objesi yardimiyla olusturun
 
-    @Test (groups = {"smoke","regression"})
+     */
+
+    @Test
     public void alisverisTesti(){
+        extentTest = extentReports.createTest("Alisveris Testi",
+                "Kullanici istedigi urunun sepete eklendigini test edebilmeli");
+
         //1- https://www.testotomasyonu.com/ anasayfasina gidin
         Driver.getDriver().get(ConfigReader.getProperty("toUrl"));
+        extentTest.info("Kullanici https://www.testotomasyonu.com/ anasayfasina gider");
 
         //2- belirlenmis arama kelimesi icin arama yapin
         TestotomasyonuPage testotomasyonuPage = new TestotomasyonuPage();
 
         testotomasyonuPage.aramaKutusu
                 .sendKeys( ConfigReader.getProperty("toAranacakKelime") + Keys.ENTER);
-
+        extentTest.info("belirlenmis arama kelimesi icin arama yapar");
 
         //3- Listelenen sonuclardan ilkini tiklayin
         testotomasyonuPage.bulunanUrunElementleriList
                 .get(0)
                 .click();
-        ReusableMethods.bekle(1);
+        extentTest.info("Listelenen sonuclardan ilkini tiklar");
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
         // 500 piksel aşağı kaydır
-        js.executeScript("window.scrollBy(0, 1500);");
+        js.executeScript("window.scrollBy(0, 500);");
 
         //4- urun ismini kaydedin
         String ilkUrunIsmi = testotomasyonuPage.urunSayfasindakiIsimElementi.getText();
+        extentTest.info("Tikladigi urunun ismini kaydeder");
+
+        ReusableMethods.bekle(2);
 
         // ve urunu sepete ekleyin
         testotomasyonuPage.urunSayfasindakiSepeteEkleButonu
                 .click();
+        extentTest.info("urunu sepete ekler");
 
         js.executeScript("window.scrollBy(0, -1000);");
+
+        ReusableMethods.bekle(5);
 
         //5- your cart linkine tiklayin
         testotomasyonuPage.urunSayfasindakiYourCartButonu
                 .click();
+        extentTest.info("your cart linkine tiklar");
+
+        ReusableMethods.bekle(2);
 
         //6- kaydettiginiz urun ismi ile sepetteki urun isminin ayni oldugunu test edin
 
         String sepettekiUrunIsmi = testotomasyonuPage.yourCartSayfasindakiUrunIsmi.getText();
 
         Assert.assertEquals(ilkUrunIsmi , sepettekiUrunIsmi);
+        extentTest.pass("kaydettigi urun ismi ile sepetteki urun isminin ayni oldugunu test eder");
 
         //7- sayfayi kapatin
-        Driver.quitDriver();
+
+        extentTest.info("sayfayi kapatir");
     }
+
 }
